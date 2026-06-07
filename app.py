@@ -3,6 +3,7 @@ import pandas as pd
 import joblib
 
 model = joblib.load("Logistic Regression_titanic.pkl")
+scaler = joblib.load("scaler.pkl")
 
 st.title("Titanic Survival Prediction")
 
@@ -46,10 +47,16 @@ if st.button("Predict"):
         'alone'
     ])
 
-    prediction = model.predict(data)
+        
 
-    if prediction[0] == 1:
-        st.success("Passenger Survived")
+    data_scaled = scaler.transform(data)
+
+    if pclass == 1 and fare < 20:
+      st.error("Invalid fare for First Class")
     else:
-        st.error("Passenger Did Not Survive")
+      prediction = model.predict(data_scaled)
+      if prediction[0] == 1:
+        st.success("Passenger Survived")
+      else:
+        st.error("Passenger Did Not Survived")
 
